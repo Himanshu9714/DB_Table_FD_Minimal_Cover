@@ -2,14 +2,17 @@
 What is functional dependency?
 
     - Functional dependency is a concept in database design and normalization.
-    - It refers to the relationship between two attributes (or columns) in a table, where the value of one attribute is determined by the value of another attribute.
+    - It refers to the relationship between two attributes (or columns) in a table, 
+    where the value of one attribute is determined by the value of another attribute.
     - In other words, if the value of attribute A is known, the value of attribute B can be determined.
-    - In database design, functional dependencies are used to identify and eliminate redundancy in the data, and to ensure data integrity and consistency.
+    - In database design, functional dependencies are used to identify and 
+    eliminate redundancy in the data, and to ensure data integrity and consistency.
 
 
 What is canonical or minimal cover of functional dependency?
 
-    - A canonical or minimal cover of functional dependencies (FDs) is a set of FDs that includes all the dependencies that are logically implied by the original set of FDs, but no redundant dependencies.
+    - A canonical or minimal cover of functional dependencies (FDs) is a set of FDs that includes 
+    all the dependencies that are logically implied by the original set of FDs, but no redundant dependencies.
     - In other words, it is a minimal set of FDs that still implies all the dependencies of the original set.
 
     - A set of FDs is considered to be in canonical cover if and only if it satisfies the following properties:
@@ -18,9 +21,12 @@ What is canonical or minimal cover of functional dependency?
         2. It contains no redundant dependencies.
         3. It is in minimal form.
 
-    - For example, if A->B and B->C are given functional dependencies, the canonical cover will be A->B,B->C and not A->B,B->C,A->C as A->C is redundant.
+    - For example, if A->B and B->C are given functional dependencies, 
+    the canonical cover will be A->B, B->C and not A->B, B->C, A->C as A->C is redundant.
 
-    It is important to find the canonical cover of a set of functional dependencies because it can be used to find the minimal set of attributes required to determine all other attributes in a table, which can simplify the design and improve the performance of the database.
+    It is important to find the canonical cover of a set of functional dependencies because 
+    it can be used to find the minimal set of attributes required to determine all other attributes in a table, 
+    which can simplify the design and improve the performance of the database.
 
 Steps to find minimal cover of functional dependecies.
 
@@ -43,7 +49,7 @@ class FDSet:
         2. A good way to create relation of the FD.
     """
 
-    def __init__(self, num_of_fds: int, relation: tuple = None):
+    def __init__(self, num_of_fds: int, relation: tuple = None) -> None:
         """
         Initialize the FDSet object with the number of functional dependencies and the relation.
 
@@ -65,26 +71,26 @@ class FDSet:
             self.R = FDSet.create_relation()
 
     @property
-    def _fd_set(self):
+    def _fd_set(self) -> set:
         """
         Get the functional dependency set.
 
         Returns:
-            set: The functional dependency set.
+            fd_set: The functional dependency set.
         """
         return self.fd_set
 
     @_fd_set.setter
-    def _fd_set(self, fd_set):
+    def _fd_set(self, fd_set: set):
         self.fd_set = fd_set
 
     @staticmethod
-    def create_relation():
+    def create_relation() -> tuple:
         """
         Create a new relation by asking the user for the number of attributes and their values.
 
         Returns:
-            tuple: A tuple representing the relation.
+            relation R: A tuple representing the relation.
         """
         R = []
         print("Before creating functional dependency, you must defined the relation.")
@@ -100,15 +106,18 @@ class FDSet:
         return tuple(R)
 
     @staticmethod
-    def closure_of_attr(fd_set, attr):
+    def closure_of_attr(fd_set: set, attr: str) -> set:
         """
-        closure_of_attr is a function that finds the closure of a given set of attributes in a functional dependency set. It uses the concept of attribute closure, where the closure of a set of attributes is the set of attributes that can be inferred from the given set of attributes.
+        The method finds the closure of a given attribute in a functional dependency set.
+        It uses the concept of attribute closure, where the closure of an attribute
+        is the set of attributes that can be inferred from the given set of attributes.
 
         Args:
             fd_set: the functional dependency set
-            attr: the set of attributes for which the closure is to be found
+            attr: the attribute for which the closure is to be found
 
-        Returns: the closure of the given set of attributes
+        Returns:
+            closure: the closure of the given attribute
         """
         closure = {attr}
         for _ in range(len(fd_set)):
@@ -117,9 +126,10 @@ class FDSet:
                     closure.add(fd[1])
         return closure
 
-    def create_fd_set(self):
+    def create_fd_set(self) -> set:
         """
-        Create a new functional dependency set by asking the user for the left-hand side and right-hand side of each functional dependency.
+        Create a new functional dependency set by asking the user for the
+        left-hand side and right-hand side of each functional dependency.
         """
         for num in range(1, self.num_of_fds + 1):
             # LHS of the functional dependency
@@ -137,12 +147,12 @@ class FDSet:
             self.fd_set.add((fd_lhs, fd_rhs))
 
     @staticmethod
-    def print_fd_set(fd_set):
+    def print_fd_set(fd_set) -> set:
         """
         Print the functional dependency set.
 
         Args:
-            fd_set (set): A set of functional dependencies.
+            fd_set: A set of functional dependencies.
         """
         fd_set_str_set = set()
         for fd in fd_set:
@@ -151,10 +161,7 @@ class FDSet:
 
     def __str__(self) -> str:
         """
-        Get a string representation of the functional dependency set.
-
-        Returns:
-            str: A string representation of the functional dependency set.
+        string representation of the functional dependency set.
         """
         print(f"Functional Dependencies: {self.fd_set}")
 
@@ -164,8 +171,10 @@ class MinimalCover:
     This class MinimalCover is used to find the minimal cover of a given functional dependency set.
 
     Methods:
-    simplify_fd_set(): Simplify the given fd set
-    remove_fd_not_present_in_relation(): Remove the fd whose attributes does not belongs to R
+        simplify_fd_set(): Simplify the given fd set
+        remove_fd_not_present_in_relation(): Remove the fd whose attributes does not belongs to R
+        remove_redundent_fd(): Removes the redundent fds
+        canonical_cover(): The minimal cover of the fd set
 
     TODO:
         1. Currently working only with alphabet characters i.e. A, B, C, D, ..
@@ -179,8 +188,8 @@ class MinimalCover:
         This function is used to initialize the attributes of the MinimalCover class with the given functional dependency set and relation.
 
         Args:
-        fd_set (set): set of functional dependencies
-        relation (tuple): Tuple of attributes
+            fd_set (set): set of functional dependencies
+            relation (tuple): Tuple of attributes
         """
         self.fd_set = fd_set
         self.R = relation
@@ -189,16 +198,17 @@ class MinimalCover:
         self.is_redundent_fd_removed = False
         self.result = []
 
-    def simplify_fd_set(self):
+    def simplify_fd_set(self) -> set:
         """
         Simplify the given functional dependency set
 
         This function is used to simplify the given functional dependency set by breaking the RHS of a FD into single attributes.
 
         Returns:
-        set: simplified functional dependency set
+            simplified_fd_set: simplified functional dependency set
         """
 
+        # Check if fd set is already simplified
         if self.is_simplified:
             return self.fd_set
 
@@ -212,14 +222,14 @@ class MinimalCover:
         self.is_simplified = True
         return self.simplified_fd_set
 
-    def remove_fd_not_present_in_relation(self):
+    def remove_fd_not_present_in_relation(self) -> set:
         """
         Remove functional dependencies whose attributes not present in relation
 
         This function is used to remove the functional dependencies whose attributes are not present in the relation.
 
         Returns:
-        set: functional dependency set after removing fd with attributes not in R
+            functional dependency set after removing fd with attributes not in R
         """
         # Check if fds that doesn't belongs to relation are already removed.
         if self.is_attr_not_belongs_to_R_removed:
@@ -242,7 +252,7 @@ class MinimalCover:
         self.is_attr_not_belongs_to_R_removed = True
         return self.remove_fd_whose_attr_not_in_R
 
-    def remove_redundent_fd(self):
+    def remove_redundent_fd(self) -> set:
         """
         The method that removes any functional dependencies that are redundant from the functional dependency set. It uses the concept of attribute closure to check if a functional dependency can be inferred from the remaining functional dependencies and removes it if it can.
 
@@ -284,11 +294,15 @@ class MinimalCover:
         self.is_redundent_fd_removed = True
         return self.removed_redundent_fd
 
-    def canonical_cover(self):
+    def canonical_cover(self) -> set:
         """
-        The method returns the canonical cover of the functional dependency set. It first simplifies the functional dependency set by removing any extraneous attributes, then removes any functional dependencies that are not present in the relation, and finally removes any redundant functional dependencies.
+        The method returns the canonical cover of the functional dependency set.
+        It first simplifies the functional dependency set by removing any extraneous attributes,
+        then removes any functional dependencies that are not present in the relation,
+        and finally removes any redundant functional dependencies.
 
-        Returns: the canonical cover of the functional dependency set
+        Returns:
+            fd_set: the canonical cover of the functional dependency set
         """
         # Simplify the FD set.
         self.fd_set = self.simplify_fd_set()
@@ -306,13 +320,22 @@ class MinimalCover:
 if __name__ == "__main__":
 
     num_of_fds = 5
+    # Create an instance of FDSet class
     fd_set_obj = FDSet(num_of_fds, relation=("A", "B", "C", "D", "E"))
+
+    # Set the functiona dependecy set
     fd_set_obj._fd_set = {("A", "BE"), ("A", "C"), ("C", "B"), ("D", "F"), ("C", "R")}
+
+    # Get the functional dependency set
     fd_set = fd_set_obj._fd_set
+
     print("***** FUNCTIONAL DEPENDENCIES *****")
     FDSet.print_fd_set(fd_set)
 
-    mc = MinimalCover(fd_set, fd_set_obj.R)
-    new_fd_set = mc.canonical_cover()
+    # Create an instance of MinimalCover class
+    minimal_cover = MinimalCover(fd_set, fd_set_obj.R)
+    # Find minimal cover of the FD set
+    minimal_cover_fd_set = minimal_cover.canonical_cover()
+
     print("\n***** CANONICAL COVER OF FUNCTIONAL DEPENDENCY *****")
-    FDSet.print_fd_set(new_fd_set)
+    FDSet.print_fd_set(minimal_cover_fd_set)
